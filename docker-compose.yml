@@ -1,12 +1,26 @@
-version: "3.8"
-
+version: '3'
 services:
+  jupyter:
+    build: .
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/work
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    networks:
+      - kafka-network
+
   kafka:
     image: moeenz/docker-kafka-kraft:latest
-    restart: always
     ports:
       - "9093:9093"
     environment:
       - KRAFT_CONTAINER_HOST_NAME=kafka
       - KRAFT_CREATE_TOPICS=topic-a,topic-b,topic-c
       - KRAFT_PARTITIONS_PER_TOPIC=3
+    networks:
+      - kafka-network
+
+networks:
+  kafka-network:
